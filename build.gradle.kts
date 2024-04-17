@@ -18,7 +18,7 @@ group = "hexlet.code"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_20
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 configurations {
