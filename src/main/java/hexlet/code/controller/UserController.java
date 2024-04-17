@@ -9,6 +9,7 @@ import hexlet.code.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
@@ -31,17 +32,19 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "")
-    public List<UserDto> index() {
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDto>> index() {
         var users = userRepository.findAll();
-        return users.stream()
+        var result = users.stream()
                 .map(u -> userMapper.map(u))
                 .toList();
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(users.size()))
+                .body(result);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "/{id}")
+    @GetMapping("/users/{id}")
     public UserDto show(@PathVariable Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -50,7 +53,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("")
+    @PostMapping("/users")
     public UserDto create(@Valid @RequestBody UserCreateDto userCreateDto) {
         var user = userMapper.map(userCreateDto);
         userRepository.save(user);
@@ -59,7 +62,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping(path = "/{id}")
+    @PutMapping("/users/{id}")
     public UserDto update(@Valid @RequestBody UserUpdateDto userUpdateDto, @PathVariable Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -69,7 +72,7 @@ public class UserController {
         return userDto;
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable Long id) {
         userRepository.deleteById(id);
