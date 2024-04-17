@@ -5,8 +5,8 @@ plugins {
     id("application")
     id ("jacoco")
     id("checkstyle")
-    id("io.freefair.lombok") version "8.4"
-    id("org.springframework.boot") version "3.2.2"
+    id("io.freefair.lombok") version "8.6"
+    id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
 }
 
@@ -44,7 +44,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.instancio:instancio-junit:3.3.0")
+    implementation("org.instancio:instancio-junit:3.6.0")
 
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
