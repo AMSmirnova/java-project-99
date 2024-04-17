@@ -37,7 +37,7 @@ dependencies {
     implementation("net.datafaker:datafaker:2.0.2")
     runtimeOnly("com.h2database:h2")
     implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("org.postgresql:postgresql:42.7.1")
+    implementation("org.postgresql:postgresql:42.7.3")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-devtools")
