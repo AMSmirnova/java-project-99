@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("development")
+//@Profile("development")
 @AllArgsConstructor
 public class DataInitializer implements ApplicationRunner {
     @Autowired
