@@ -1,9 +1,9 @@
 package hexlet.code.mapper;
 
-import hexlet.code.dto.taskStatus.TaskStatusesCreateDto;
-import hexlet.code.dto.taskStatus.TaskStatusesDto;
-import hexlet.code.dto.taskStatus.TaskStatusesUpdateDto;
-import hexlet.code.model.TaskStatuses;
+import hexlet.code.dto.task.TaskCreateDto;
+import hexlet.code.dto.task.TaskDto;
+import hexlet.code.dto.task.TaskUpdateDto;
+import hexlet.code.model.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
@@ -16,8 +16,8 @@ import org.mapstruct.ReportingPolicy;
         componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
-public abstract class TaskStatusesMapper {
-    public abstract TaskStatuses map(TaskStatusesCreateDto dto);
-    public abstract TaskStatusesDto map(TaskStatuses model);
-    public abstract void update(TaskStatusesUpdateDto dto, @MappingTarget TaskStatuses model);
+public abstract class TaskMapper {
+    public abstract Task map(TaskCreateDto dto);
+    public abstract TaskDto map(Task model);
+    public abstract void update(TaskUpdateDto dto, @MappingTarget Task model);
 }

@@ -1,10 +1,10 @@
 package hexlet.code.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,26 +16,30 @@ import java.time.LocalDate;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
-@Table(name = "task_statuses")
-@Setter
+@Table(name = "tasks")
 @Getter
-public class TaskStatuses implements BaseEntity {
+@Setter
+@Entity
+public class Task implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @NotNull
     @Size(min = 1)
-    @Column(unique = true)
     private String name;
 
     @NotNull
-    @Size(min = 1)
-    @Column(unique = true)
-    private String slug;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private TaskStatuses taskStatus;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private int index;
+    private String description;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name="users_id")
+    private User assignee;
+
     @CreatedDate
     private LocalDate createdAt;
 }

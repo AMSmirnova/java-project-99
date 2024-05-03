@@ -1,8 +1,8 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.TaskStatusesCreateDto;
-import hexlet.code.dto.TaskStatusesDto;
-import hexlet.code.dto.TaskStatusesUpdateDto;
+import hexlet.code.dto.taskStatus.TaskStatusesCreateDto;
+import hexlet.code.dto.taskStatus.TaskStatusesDto;
+import hexlet.code.dto.taskStatus.TaskStatusesUpdateDto;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusesMapper;
 import hexlet.code.repository.TaskStatusesRepository;
@@ -62,6 +62,7 @@ public class TaskStatusesController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task_statuses")
+//    @PreAuthorize("@UserUtils.isUserAuthenticated")
     public TaskStatusesDto create(@Valid @RequestBody TaskStatusesCreateDto taskStatusCreateDto) {
         var taskStatus = taskStatusesMapper.map(taskStatusCreateDto);
         taskStatusesRepository.save(taskStatus);
@@ -71,6 +72,7 @@ public class TaskStatusesController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/task_statuses/{id}")
+//    @PreAuthorize("@UserUtils.isUserAuthenticated")
     public TaskStatusesDto update(@Valid @RequestBody TaskStatusesUpdateDto taskStatusesUpdateDto,
                                   @PathVariable Long id) {
         var taskStatus = taskStatusesRepository.findById(id)
@@ -83,6 +85,7 @@ public class TaskStatusesController {
 
     @DeleteMapping("/task_statuses/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @PreAuthorize("@UserUtils.isUserAuthenticated")
     public void destroy(@PathVariable Long id) {
         taskStatusesRepository.deleteById(id);
     }
