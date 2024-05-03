@@ -30,14 +30,13 @@ public class Task implements BaseEntity {
     private String name;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private TaskStatuses taskStatus;
 
     private int index;
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name="users_id")
+    @ManyToOne(cascade = CascadeType.DETACH)
     private User assignee;
 
     @CreatedDate
