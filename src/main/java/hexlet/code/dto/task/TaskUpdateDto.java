@@ -1,19 +1,25 @@
 package hexlet.code.dto.task;
 
-import hexlet.code.model.TaskStatuses;
-import hexlet.code.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.jackson.nullable.JsonNullable;
+
+import java.util.List;
 
 @Setter
 @Getter
 public class TaskUpdateDto {
 
-    private JsonNullable<String> name;
-    private JsonNullable<TaskStatuses> taskStatus;
+    private JsonNullable<String> title;
+    private JsonNullable<String> status;
     private JsonNullable<Integer> index;
-    private JsonNullable<String> description;
-    private JsonNullable<User> assignee;
+    private JsonNullable<String> content;
+
+    @JsonProperty("assignee_id")
+    private JsonNullable<Long> assigneeId;
+
+    @JsonProperty("taskLabelIds")
+    private JsonNullable<List<Long>> labelIds;
 
 }

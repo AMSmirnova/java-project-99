@@ -1,16 +1,22 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.dto.task.TaskCreateDto;
 import hexlet.code.dto.task.TaskUpdateDto;
+import hexlet.code.exception.ResourceNotFoundException;
+import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
-import hexlet.code.model.TaskStatuses;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
-import hexlet.code.repository.TaskStatusesRepository;
+import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -20,6 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +56,10 @@ public class TaskControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private TaskStatusesRepository taskStatusesRepository;
+    private TaskStatusRepository taskStatusesRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
     @Autowired
     private ModelGenerator modelGenerator;
@@ -57,20 +69,34 @@ public class TaskControllerTest {
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
     private Task testTask;
-    private TaskStatuses testTaskStatus;
+    private TaskStatus testTaskStatus;
     private User testUser;
+    private Label testLabel;
+
+    @Autowired
+    private TaskMapper taskMapper;
 
     @BeforeEach
     public void setUp() {
         token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
-        testUser = Instancio.of(modelGenerator.getUserModel()).create();
-        testTaskStatus = Instancio.of(modelGenerator.getTaskStatusesModel()).create();
+        testUser = userRepository.findByEmail("hexlet@example.com")
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        testTaskStatus = taskStatusesRepository.findBySlug("draft")
+                .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
+        testLabel = labelRepository.findByName("bug")
+                .orElseThrow(() -> new ResourceNotFoundException("Label not found"));
+
         testTask = Instancio.of(modelGenerator.getTaskModel()).create();
-        userRepository.save(testUser);
-        taskStatusesRepository.save(testTaskStatus);
         testTask.setTaskStatus(testTaskStatus);
         testTask.setAssignee(testUser);
+        testTask.setLabels(Set.of(testLabel));
+
         taskRepository.save(testTask);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        taskRepository.deleteById(testTask.getId());
     }
 
     @Test
@@ -81,9 +107,14 @@ public class TaskControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getTaskModel()).create();
-        data.setAssignee(testUser);
-        data.setTaskStatus(testTaskStatus);
+
+        var data = new TaskCreateDto();
+        data.setTitle("title");
+        data.setContent("content");
+        data.setStatus(testTaskStatus.getSlug());
+        data.setAssigneeId(testUser.getId());
+        data.setIndex(123344);
+        data.setLabelsIds(List.of(testLabel.getId()));
 
         var request = post("/api/tasks")
                 .with(token)
@@ -92,16 +123,20 @@ public class TaskControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var task = taskRepository.findByName(data.getName()).get();
+        var task = taskRepository.findByName(data.getTitle()).get();
 
         assertNotNull(task);
         assertThat(task.getIndex()).isEqualTo(data.getIndex());
+        assertThat(task.getName()).isEqualTo(data.getTitle());
+        assertThat(task.getDescription()).isEqualTo(data.getContent());
+        assertThat(task.getTaskStatus().getName()).isEqualTo("Draft");
+        assertThat(task.getAssignee().getId()).isEqualTo(data.getAssigneeId());
     }
 
     @Test
     public void testUpdate() throws Exception {
         var data = new TaskUpdateDto();
-        data.setName(JsonNullable.of("new name"));
+        data.setTitle(JsonNullable.of("new name"));
 
         var request = put("/api/tasks/" + testTask.getId())
                 .with(token)
@@ -112,6 +147,6 @@ public class TaskControllerTest {
                 .andExpect(status().isOk());
 
         var task = taskRepository.findById(testTask.getId()).get();
-        assertThat(task.getName()).isEqualTo(data.getName().get());
+        assertThat(task.getName()).isEqualTo(data.getTitle().get());
     }
 }

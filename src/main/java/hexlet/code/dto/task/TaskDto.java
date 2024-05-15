@@ -1,22 +1,22 @@
 package hexlet.code.dto.task;
 
-import hexlet.code.model.TaskStatuses;
-import hexlet.code.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 public class TaskDto {
 
     private Long id;
-    private String name;
-    private TaskStatuses taskStatus;
+    private String title;
+    private String status;
     private int index;
-    private String description;
-    private User assignee;
+    private String content;
+    private Long assigneeId;
+    private List<Long> labelIds;
 
-    private LocalDate createdAt;
+    private Date createdAt;
 }

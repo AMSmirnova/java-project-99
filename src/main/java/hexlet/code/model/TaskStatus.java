@@ -1,26 +1,30 @@
 package hexlet.code.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.TemporalType.TIMESTAMP;
 
 @Entity
 @Table(name = "task_statuses")
 @Setter
 @Getter
-public class TaskStatuses implements BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class TaskStatus implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -35,7 +39,8 @@ public class TaskStatuses implements BaseEntity {
     @Column(unique = true)
     private String slug;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @CreatedDate
-    private LocalDate createdAt;
+    @CreationTimestamp
+    @Temporal(TIMESTAMP)
+    private Date createdAt;
+
 }

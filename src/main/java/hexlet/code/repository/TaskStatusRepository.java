@@ -1,6 +1,6 @@
 package hexlet.code.repository;
 
-import hexlet.code.model.TaskStatuses;
+import hexlet.code.model.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TaskStatusesRepository
-        extends JpaRepository<TaskStatuses, Long>, JpaSpecificationExecutor<TaskStatuses> {
+public interface TaskStatusRepository
+        extends JpaRepository<TaskStatus, Long>, JpaSpecificationExecutor<TaskStatus> {
 
-    Optional<TaskStatuses> findBySlug(String slug);
+    Optional<TaskStatus> findBySlug(String slug);
 
 }

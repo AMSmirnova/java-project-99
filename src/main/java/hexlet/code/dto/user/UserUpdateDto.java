@@ -13,6 +13,6 @@ public class UserUpdateDto {
     private JsonNullable<String> lastName;
 
     private JsonNullable<String> email;
-    private JsonNullable<String> passwordDigest;
+    private JsonNullable<String> password;
 
 }
