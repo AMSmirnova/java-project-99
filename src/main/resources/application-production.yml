@@ -5,6 +5,6 @@ spring:
       ddl-auto: update
 
   datasource:
-    url: ${JDBC_DATABASE_URL}
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/java-project-99}
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
