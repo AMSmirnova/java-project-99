@@ -12,7 +12,7 @@ This is an educational project based on the Spring Framework.
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0ba13c6552516d95fa11/test_coverage)](https://codeclimate.com/github/AMSmirnova/java-project-99/test_coverage)
 
 # Run server
-make start
-# Open http://localhost:8080
-# Username: hexlet@example.com
-# Password: qwerty
+### make start
+* Open http://localhost:8080
+* Username: hexlet@example.com
+* Password: qwerty
