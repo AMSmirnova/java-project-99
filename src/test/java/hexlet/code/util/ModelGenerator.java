@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class ModelGenerator {
     private Model<User> userModel;
 
-    private Model<TaskStatus> taskStatusesModel;
+    private Model<TaskStatus> taskStatusModel;
 
     private Model<Task> taskModel;
 
@@ -27,8 +27,6 @@ public class ModelGenerator {
     @Autowired
     private Faker faker;
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
 
     @PostConstruct
     private void init() {
@@ -37,12 +35,10 @@ public class ModelGenerator {
                 .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
                 .supply(Select.field(User::getLastName), () -> faker.name().lastName())
                 .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
-//                .supply(Select.field(User::getPasswordDigest), () -> passwordEncoder
-//                        .encode(faker.internet().password()))
                 .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password())
                 .toModel();
 
-        taskStatusesModel = Instancio.of(TaskStatus.class)
+        taskStatusModel = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
                 .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().word())
@@ -58,7 +54,7 @@ public class ModelGenerator {
 
         labelModel = Instancio.of(Label.class)
                 .ignore(Select.field(Label::getId))
-                .supply(Select.field(Label::getName), () -> faker.lorem().word())
+                .supply(Select.field(Label::getName), () -> faker.lorem().word() + "label")
                 .toModel();
 
     }

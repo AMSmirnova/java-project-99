@@ -51,15 +51,6 @@ public class TaskStatusesController {
         return taskStatusDto;
     }
 
-//    @GetMapping("/task_statuses/{slug}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public TaskStatusesDto show(@PathVariable String slug) {
-//        var taskStatus = taskStatusesRepository.findBySlug(slug)
-//                .orElseThrow(() -> new ResourceNotFoundException("Task status not found"));
-//        var taskStatusDto = taskStatusesMapper.map(taskStatus);
-//        return taskStatusDto;
-//    }
-
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task_statuses")
     public TaskStatusDto create(@Valid @RequestBody TaskStatusCreateDto taskStatusCreateDto) {

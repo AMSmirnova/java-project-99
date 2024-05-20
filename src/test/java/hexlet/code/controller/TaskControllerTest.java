@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.task.TaskCreateDto;
 import hexlet.code.dto.task.TaskUpdateDto;
 import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -32,6 +31,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -73,8 +73,6 @@ public class TaskControllerTest {
     private User testUser;
     private Label testLabel;
 
-    @Autowired
-    private TaskMapper taskMapper;
 
     @BeforeEach
     public void setUp() {
@@ -101,8 +99,19 @@ public class TaskControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        mockMvc.perform(get("/api/tasks").with(token))
-                .andExpect(status().isOk());
+        var request = get("/api/tasks").with(token);
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+
+        var tasks = taskRepository.findAll();
+        for (var task : tasks) {
+            assertThat(body).contains(String.valueOf(task.getId()));
+            assertThat(body).contains(task.getName());
+            assertThat(body).contains(task.getDescription());
+        }
     }
 
     @Test
@@ -148,5 +157,69 @@ public class TaskControllerTest {
 
         var task = taskRepository.findById(testTask.getId()).get();
         assertThat(task.getName()).isEqualTo(data.getTitle().get());
+    }
+
+    @Test
+    public void testDestroy() throws Exception {
+        var request = delete("/api/tasks/{id}", testTask.getId()).with(token);
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+
+        var task = taskRepository.findById(testTask.getId()).orElse(null);
+        assertThat(task).isNull();
+    }
+
+
+    @Test
+    public void testIndexFilterWithTitleCont() throws Exception {
+        var titleCont = testTask.getName();
+
+        var request = get("/api/tasks?titleCont=" + titleCont).with(token);
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThat(body).contains(titleCont);
+    }
+
+    @Test
+    public void testIndexFilterWithAssigneeId() throws Exception {
+        var assigneeId = testTask.getAssignee().getId();
+
+        var request = get("/api/tasks?assigneeId=" + assigneeId).with(token);
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThat(body).contains(String.valueOf(assigneeId));
+    }
+
+    @Test
+    public void testIndexFilterWithStatus() throws Exception {
+        var status = testTask.getTaskStatus().getSlug();
+
+        var request = get("/api/tasks?status=" + status).with(token);
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThat(body).contains(status);
+    }
+
+    @Test
+    public void testIndexFilterWithLabelId() throws Exception {
+        var label = testTask.getLabels().iterator().next();
+        var labelId = label.getId();
+
+        var request = get("/api/tasks?labelId=" + labelId).with(token);
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThat(body).contains(String.valueOf(labelId));
     }
 }

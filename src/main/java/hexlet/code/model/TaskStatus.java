@@ -7,7 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,12 +29,12 @@ public class TaskStatus implements BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Size(min = 1)
     @Column(unique = true)
     private String name;
 
-    @NotNull
+    @NotBlank
     @Size(min = 1)
     @Column(unique = true)
     private String slug;

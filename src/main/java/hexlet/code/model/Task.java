@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class Task implements BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Size(min = 1)
     private String name;
 

@@ -6,10 +6,12 @@ import hexlet.code.dto.user.UserUpdateDto;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.util.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +33,9 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserUtils userUtils;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> index() {
@@ -74,6 +79,7 @@ public class UserController {
 
     @DeleteMapping(path = "/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@userUtils.isCurrentUser(#id)")
     public void destroy(@PathVariable Long id) {
         userRepository.deleteById(id);
     }
