@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Setter
 @Getter
-public class UserDto {
+public class UserDTO {
 
     private Long id;
     private String firstName;

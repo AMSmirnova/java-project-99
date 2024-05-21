@@ -1,8 +1,8 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dto.task.TaskCreateDto;
-import hexlet.code.dto.task.TaskUpdateDto;
+import hexlet.code.dto.task.TaskCreateDTO;
+import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
@@ -117,7 +117,7 @@ public class TaskControllerTest {
     @Test
     public void testCreate() throws Exception {
 
-        var data = new TaskCreateDto();
+        var data = new TaskCreateDTO();
         data.setTitle("title");
         data.setContent("content");
         data.setStatus(testTaskStatus.getSlug());
@@ -144,7 +144,7 @@ public class TaskControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        var data = new TaskUpdateDto();
+        var data = new TaskUpdateDTO();
         data.setTitle(JsonNullable.of("new name"));
 
         var request = put("/api/tasks/" + testTask.getId())

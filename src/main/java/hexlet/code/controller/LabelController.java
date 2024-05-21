@@ -2,6 +2,8 @@ package hexlet.code.controller;
 
 import hexlet.code.dto.label.LabelCreateDTO;
 import hexlet.code.dto.label.LabelDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-@Tag(name = "labels")
+@Tag(name = "Label controller")
 @RestController
 @RequestMapping("/api")
 public class LabelController {
@@ -38,12 +40,12 @@ public class LabelController {
     private LabelMapper labelMapper;
 
     @GetMapping("/labels")
+    @Operation(description = "Get list all labels")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found the label",
+        @ApiResponse(responseCode = "200", description = "List all labels",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = LabelDTO.class)) }),
-        @ApiResponse(responseCode = "404", description = "Label with that id not found",
-                    content = @Content) })
+                            schema = @Schema(implementation = LabelDTO.class)) })
+    })
     public ResponseEntity<List<LabelDTO>> index() {
         var labels = labelRepository.findAll();
         var result = labels.stream()
@@ -56,6 +58,13 @@ public class LabelController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/labels/{id}")
+    @Operation(description = "Find label by id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found the label",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LabelDTO.class)) }),
+        @ApiResponse(responseCode = "404", description = "Label with that id not found",
+                    content = @Content) })
     public LabelDTO show(@PathVariable Long id) {
         var label = labelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("label not found"));
@@ -65,7 +74,16 @@ public class LabelController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/labels")
-    public LabelDTO create(@Valid @RequestBody LabelCreateDTO labelCreateDto) {
+    @Operation(description = "Create label")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Label created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LabelDTO.class)) }),
+        @ApiResponse(responseCode = "400", description = "Invalid label data",
+                    content = @Content) })
+    public LabelDTO create(
+            @Parameter(description = "Data to save")
+            @Valid @RequestBody LabelCreateDTO labelCreateDto) {
         var label = labelMapper.map(labelCreateDto);
         labelRepository.save(label);
         var labelDto = labelMapper.map(label);
@@ -74,6 +92,14 @@ public class LabelController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/labels/{id}")
+    @Operation(description = "Update label")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Label updated",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LabelDTO.class)) }),
+        @ApiResponse(responseCode = "400", description = "Invalid label data",
+                    content = @Content),
+        @ApiResponse(responseCode = "404", description = "Label not found")})
     public LabelDTO update(@Valid @RequestBody LabelUpdateDTO labelUpdateDto,
                            @PathVariable Long id) {
         var label = labelRepository.findById(id)
@@ -86,6 +112,11 @@ public class LabelController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/labels/{id}")
+    @Operation(summary = "Delete label by id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Label deleted", content = @Content),
+        @ApiResponse(responseCode = "405", description = "Operation not possible", content = @Content)
+    })
     public void destroy(@PathVariable Long id) {
         labelRepository.deleteById(id);
     }

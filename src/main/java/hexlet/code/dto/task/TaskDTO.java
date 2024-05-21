@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TaskDto {
+public class TaskDTO {
 
     private Long id;
     private String title;

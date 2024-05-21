@@ -1,7 +1,7 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dto.user.UserUpdateDto;
+import hexlet.code.dto.user.UserUpdateDTO;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
@@ -136,7 +136,7 @@ public class UserControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        var data = new UserUpdateDto();
+        var data = new UserUpdateDTO();
         data.setFirstName(JsonNullable.of("new name"));
 
         var request = put("/api/users/" + testUser.getId())
@@ -196,7 +196,7 @@ public class UserControllerTest {
 
     @Test
     public void testUpdateWithoutAuth() throws Exception {
-        var data = new UserUpdateDto();
+        var data = new UserUpdateDTO();
         data.setEmail(JsonNullable.of("hexlet@gmail.com"));
 
         var request = put("/api/users/{id}", testUser.getId())

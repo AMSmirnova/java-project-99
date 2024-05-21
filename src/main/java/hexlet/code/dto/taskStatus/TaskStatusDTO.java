@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class TaskStatusDto {
+public class TaskStatusDTO {
     private Long id;
     private String name;
     private String slug;

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskStatusCreateDto {
+public class TaskStatusCreateDTO {
 
     @NotNull
     @Size(min = 1)

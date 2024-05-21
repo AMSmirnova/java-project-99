@@ -1,8 +1,8 @@
 package hexlet.code.mapper;
 
-import hexlet.code.dto.taskStatus.TaskStatusCreateDto;
-import hexlet.code.dto.taskStatus.TaskStatusDto;
-import hexlet.code.dto.taskStatus.TaskStatusUpdateDto;
+import hexlet.code.dto.taskStatus.TaskStatusCreateDTO;
+import hexlet.code.dto.taskStatus.TaskStatusDTO;
+import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.model.TaskStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -17,7 +17,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public abstract class TaskStatusMapper {
-    public abstract TaskStatus map(TaskStatusCreateDto dto);
-    public abstract TaskStatusDto map(TaskStatus model);
-    public abstract void update(TaskStatusUpdateDto dto, @MappingTarget TaskStatus model);
+    public abstract TaskStatus map(TaskStatusCreateDTO dto);
+    public abstract TaskStatusDTO map(TaskStatus model);
+    public abstract void update(TaskStatusUpdateDTO dto, @MappingTarget TaskStatus model);
 }

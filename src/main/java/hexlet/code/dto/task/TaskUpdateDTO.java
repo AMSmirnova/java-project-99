@@ -9,7 +9,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class TaskUpdateDto {
+public class TaskUpdateDTO {
 
     private JsonNullable<String> title;
     private JsonNullable<String> status;

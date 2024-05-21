@@ -1,7 +1,7 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dto.taskStatus.TaskStatusUpdateDto;
+import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.ModelGenerator;
@@ -118,7 +118,7 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        var data = new TaskStatusUpdateDto();
+        var data = new TaskStatusUpdateDTO();
         data.setSlug(JsonNullable.of("new_slug"));
 
         var request = put("/api/task_statuses/{id}", testStatus.getId()).with(token)
@@ -171,7 +171,7 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testUpdateWithoutAuth() throws Exception {
-        var data = new TaskStatusUpdateDto();
+        var data = new TaskStatusUpdateDTO();
         data.setSlug(JsonNullable.of("new_slug"));
 
         var request = put("/api/task_statuses/{id}", testStatus.getId())

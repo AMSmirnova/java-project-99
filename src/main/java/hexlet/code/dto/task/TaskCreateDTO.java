@@ -10,7 +10,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class TaskCreateDto {
+public class TaskCreateDTO {
 
     @NotNull
     @Size(min = 1)

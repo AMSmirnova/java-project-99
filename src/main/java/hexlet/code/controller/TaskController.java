@@ -1,13 +1,19 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.task.TaskCreateDto;
-import hexlet.code.dto.task.TaskDto;
+import hexlet.code.dto.task.TaskCreateDTO;
+import hexlet.code.dto.task.TaskDTO;
 import hexlet.code.dto.task.TaskParamsDTO;
-import hexlet.code.dto.task.TaskUpdateDto;
+import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.specification.TaskSpecification;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +43,13 @@ public class TaskController {
     private TaskMapper taskMapper;
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<TaskDto>> index(TaskParamsDTO params) {
+    @Operation(description = "Get list all tasks")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "List all tasks",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class)) })
+    })
+    public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO params) {
         var spec = specBuilder.build(params);
         var tasks = taskRepository.findAll(spec);
         var result = tasks.stream()
@@ -50,7 +62,14 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/tasks/{id}")
-    public TaskDto show(@PathVariable Long id) {
+    @Operation(description = "Find task by id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found the task",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class)) }),
+        @ApiResponse(responseCode = "404", description = "Task with that id not found",
+                    content = @Content) })
+    public TaskDTO show(@PathVariable Long id) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         var taskDto = taskMapper.map(task);
@@ -59,7 +78,16 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/tasks")
-    public TaskDto create(@Valid @RequestBody TaskCreateDto taskCreateDto) {
+    @Operation(description = "Create task")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Task created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class)) }),
+        @ApiResponse(responseCode = "400", description = "Invalid task data",
+                    content = @Content) })
+    public TaskDTO create(
+            @Parameter(description = "Data to save")
+            @Valid @RequestBody TaskCreateDTO taskCreateDto) {
         var task = taskMapper.map(taskCreateDto);
         taskRepository.save(task);
         var taskDto = taskMapper.map(task);
@@ -68,7 +96,15 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/tasks/{id}")
-    public TaskDto update(@Valid @RequestBody TaskUpdateDto taskUpdateDto, @PathVariable Long id) {
+    @Operation(description = "Update task")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Task updated",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class)) }),
+        @ApiResponse(responseCode = "400", description = "Invalid task data",
+                    content = @Content),
+        @ApiResponse(responseCode = "404", description = "Task not found")})
+    public TaskDTO update(@Valid @RequestBody TaskUpdateDTO taskUpdateDto, @PathVariable Long id) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         taskMapper.update(taskUpdateDto, task);
@@ -79,6 +115,11 @@ public class TaskController {
 
     @DeleteMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete task by id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Task deleted", content = @Content),
+        @ApiResponse(responseCode = "405", description = "Operation not possible", content = @Content)
+    })
     public void destroy(@PathVariable Long id) {
         taskRepository.deleteById(id);
     }
