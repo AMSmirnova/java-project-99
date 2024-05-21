@@ -123,7 +123,7 @@ public class TaskControllerTest {
         data.setStatus(testTaskStatus.getSlug());
         data.setAssigneeId(testUser.getId());
         data.setIndex(123344);
-        data.setLabelsIds(List.of(testLabel.getId()));
+        data.setTaskLabelIds(List.of(testLabel.getId()));
 
         var request = post("/api/tasks")
                 .with(token)
