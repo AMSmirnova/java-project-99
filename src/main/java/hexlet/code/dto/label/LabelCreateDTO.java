@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class LabelCreateDto {
+public class LabelCreateDTO {
 
     @Column(unique = true)
     @Size(min = 3, max = 1000)

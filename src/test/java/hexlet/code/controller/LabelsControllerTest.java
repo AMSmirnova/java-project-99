@@ -1,7 +1,7 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dto.label.LabelUpdateDto;
+import hexlet.code.dto.label.LabelUpdateDTO;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.ModelGenerator;
@@ -128,7 +128,7 @@ public class LabelsControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        var data = new LabelUpdateDto();
+        var data = new LabelUpdateDTO();
         data.setName(JsonNullable.of("newName"));
 
         var request = put("/api/labels/{id}", testLabel.getId()).with(token)
@@ -177,7 +177,7 @@ public class LabelsControllerTest {
 
     @Test
     public void testUpdateWithoutAuth() throws Exception {
-        var data = new LabelUpdateDto();
+        var data = new LabelUpdateDTO();
         data.setName(JsonNullable.of("newName"));
 
         var request = put("/api/labels/{id}", testLabel.getId())
