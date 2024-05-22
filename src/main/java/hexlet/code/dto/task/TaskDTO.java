@@ -23,6 +23,6 @@ public class TaskDTO {
     @JsonProperty("taskLabelIds")
     private List<Long> taskLabelIds;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd, hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date createdAt;
 }
