@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -19,12 +20,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.TemporalType.TIMESTAMP;
 
 @Entity
 @Table(name = "users")
@@ -51,9 +53,12 @@ public class User implements BaseEntity, UserDetails {
     private List<Task> tasks = new ArrayList<>();
 
     @CreationTimestamp
-    private LocalDate createdAt;
+    @Temporal(TIMESTAMP)
+    private Date createdAt;
 
-    private LocalDate updatedAt;
+    @CreationTimestamp
+    @Temporal(TIMESTAMP)
+    private Date updatedAt;
 
     @Override
     public String getPassword() {
