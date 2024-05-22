@@ -14,6 +14,6 @@ public class LabelDTO {
     private Long id;
     private String name;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd, hh:mm:ss")
     private Date createdAt;
 }

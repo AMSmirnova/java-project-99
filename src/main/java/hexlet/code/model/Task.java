@@ -42,6 +42,7 @@ public class Task implements BaseEntity {
     @Size(min = 1)
     private String name;
 
+    @JoinColumn(name = "task_status_id")
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private TaskStatus taskStatus;
@@ -52,6 +53,7 @@ public class Task implements BaseEntity {
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "assignee_id")
     private User assignee;
 
     @ManyToMany(fetch = FetchType.EAGER)
