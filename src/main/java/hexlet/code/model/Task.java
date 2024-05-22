@@ -1,5 +1,6 @@
 package hexlet.code.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -43,7 +44,6 @@ public class Task implements BaseEntity {
     private String name;
 
     @JoinColumn(name = "task_status_id")
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private TaskStatus taskStatus;
 
@@ -52,12 +52,11 @@ public class Task implements BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
+    @ManyToOne(cascade = CascadeType.MERGE)
     private User assignee;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @NotNull
+    @ManyToMany
     @JoinTable(name = "task_labels",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "labels_id"))
