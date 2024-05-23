@@ -51,8 +51,8 @@ public class Task implements BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "assignee_id")
-    @ManyToOne(cascade = CascadeType.MERGE)
     private User assignee;
 
     @ManyToMany
