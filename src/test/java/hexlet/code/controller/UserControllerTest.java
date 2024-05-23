@@ -7,7 +7,6 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -59,14 +58,6 @@ public class UserControllerTest {
         userRepository.save(testUser);
     }
 
-    @AfterEach
-    public void cleanUp() {
-        var tasks = testUser.getTasks();
-
-        if (tasks.isEmpty()) {
-            userRepository.deleteById(testUser.getId());
-        }
-    }
 
     @Test
     public void testIndex() throws Exception {
