@@ -13,3 +13,5 @@ spring:
       path: /h2-console/
       settings:
         web-allow-others: true
+  allowed:
+    resources: /h2-console/**

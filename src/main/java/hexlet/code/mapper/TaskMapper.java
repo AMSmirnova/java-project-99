@@ -7,8 +7,10 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.repository.UserRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -33,6 +35,9 @@ import java.util.Set;
 public abstract class TaskMapper {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TaskStatusRepository taskStatusRepository;
 
     @Autowired
@@ -42,7 +47,7 @@ public abstract class TaskMapper {
     @Mapping(source = "title", target = "name")
     @Mapping(source = "content", target = "description")
     @Mapping(source = "status", target = "taskStatus", qualifiedByName = "toTaskStatus")
-    @Mapping(source = "assigneeId", target = "assignee.id")
+    @Mapping(source = "assigneeId", target = "assignee", qualifiedByName = "toUser")
     @Mapping(source = "taskLabelIds", target = "labels", qualifiedByName = "toLabels")
     public abstract Task map(TaskCreateDTO taskCreateDTO);
 
@@ -61,6 +66,11 @@ public abstract class TaskMapper {
     public abstract void update(TaskUpdateDTO data, @MappingTarget Task model);
 
 
+    @Named("toUser")
+    public User toUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
 
     @Named("toTaskStatus")
     public TaskStatus toTaskStatus(String slug) {

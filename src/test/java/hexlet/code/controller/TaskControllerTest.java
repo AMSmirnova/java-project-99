@@ -15,6 +15,7 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
+import org.instancio.Select;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -83,10 +84,11 @@ public class TaskControllerTest {
         testLabel = labelRepository.findByName("bug")
                 .orElseThrow(() -> new ResourceNotFoundException("Label not found"));
 
-        testTask = Instancio.of(modelGenerator.getTaskModel()).create();
-        testTask.setTaskStatus(testTaskStatus);
-        testTask.setAssignee(testUser);
-        testTask.setLabels(Set.of(testLabel));
+        testTask = Instancio.of(modelGenerator.getTaskModel())
+                .set(Select.field(Task::getAssignee), testUser)
+                .set(Select.field(Task::getTaskStatus), testTaskStatus)
+                .set(Select.field(Task::getLabels), Set.of(testLabel))
+                .create();
 
         taskRepository.save(testTask);
     }
