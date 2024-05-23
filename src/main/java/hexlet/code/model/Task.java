@@ -1,5 +1,6 @@
 package hexlet.code.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -41,7 +42,7 @@ public class Task implements BaseEntity {
     private String name;
 
     @JoinColumn(name = "task_status_id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private TaskStatus taskStatus;
 
     private Integer index;
@@ -49,7 +50,7 @@ public class Task implements BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
