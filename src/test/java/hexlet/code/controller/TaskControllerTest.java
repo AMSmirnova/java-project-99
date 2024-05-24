@@ -202,7 +202,7 @@ public class TaskControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        assertThat(body).contains(status);
+        assertThat(body).contains(testTask.getName());
     }
 
     @Test
