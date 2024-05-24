@@ -3,9 +3,7 @@ package hexlet.code.controller;
 import hexlet.code.dto.user.UserCreateDTO;
 import hexlet.code.dto.user.UserDTO;
 import hexlet.code.dto.user.UserUpdateDTO;
-import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.mapper.UserMapper;
-import hexlet.code.repository.UserRepository;
+import hexlet.code.service.UserService;
 import hexlet.code.util.UserUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,13 +33,10 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private UserUtils userUtils;
+
+    @Autowired
+    private UserService userService;
 
     @Operation(description = "Get list all users")
     @ApiResponses(value = {
@@ -51,13 +46,10 @@ public class UserController {
     })
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> index() {
-        var users = userRepository.findAll();
-        var result = users.stream()
-                .map(u -> userMapper.map(u))
-                .toList();
+        var users = userService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(users.size()))
-                .body(result);
+                .body(users);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -70,10 +62,7 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "User with that id not found",
                     content = @Content) })
     public UserDTO show(@PathVariable Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        var userDto = userMapper.map(user);
-        return userDto;
+        return userService.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -88,10 +77,7 @@ public class UserController {
     public UserDTO create(
             @Parameter(description = "Data to save")
             @Valid @RequestBody UserCreateDTO userCreateDto) {
-        var user = userMapper.map(userCreateDto);
-        userRepository.save(user);
-        var userDto = userMapper.map(user);
-        return userDto;
+        return userService.create(userCreateDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -105,12 +91,7 @@ public class UserController {
                     content = @Content),
         @ApiResponse(responseCode = "404", description = "User not found")})
     public UserDTO update(@Valid @RequestBody UserUpdateDTO userUpdateDto, @PathVariable Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        userMapper.update(userUpdateDto, user);
-        userRepository.save(user);
-        var userDto = userMapper.map(user);
-        return userDto;
+        return userService.update(userUpdateDto, id);
     }
 
     @DeleteMapping(path = "/users/{id}")
@@ -122,6 +103,6 @@ public class UserController {
         @ApiResponse(responseCode = "405", description = "Operation not possible", content = @Content)
     })
     public void destroy(@PathVariable Long id) {
-        userRepository.deleteById(id);
+        userService.delete(id);
     }
 }

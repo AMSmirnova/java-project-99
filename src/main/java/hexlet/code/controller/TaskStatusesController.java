@@ -3,9 +3,7 @@ package hexlet.code.controller;
 import hexlet.code.dto.taskStatus.TaskStatusCreateDTO;
 import hexlet.code.dto.taskStatus.TaskStatusDTO;
 import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
-import hexlet.code.exception.ResourceNotFoundException;
-import hexlet.code.mapper.TaskStatusMapper;
-import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.service.TaskStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,11 +29,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class TaskStatusesController {
-    @Autowired
-    private TaskStatusMapper taskStatusesMapper;
 
     @Autowired
-    private TaskStatusRepository taskStatusesRepository;
+    private TaskStatusService taskStatusService;
 
     @GetMapping("/task_statuses")
     @Operation(description = "Get list all statuses")
@@ -45,13 +41,10 @@ public class TaskStatusesController {
                             schema = @Schema(implementation = TaskStatusDTO.class)) })
     })
     public ResponseEntity<List<TaskStatusDTO>> index() {
-        var taskStatuses = taskStatusesRepository.findAll();
-        var result = taskStatuses.stream()
-                .map(t -> taskStatusesMapper.map(t))
-                .toList();
+        var taskStatuses = taskStatusService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(taskStatuses.size()))
-                .body(result);
+                .body(taskStatuses);
     }
 
     @GetMapping("/task_statuses/{id}")
@@ -64,10 +57,7 @@ public class TaskStatusesController {
         @ApiResponse(responseCode = "404", description = "Status with that id not found",
                     content = @Content) })
     public TaskStatusDTO show(@PathVariable Long id) {
-        var taskStatus = taskStatusesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task status not found"));
-        var taskStatusDto = taskStatusesMapper.map(taskStatus);
-        return taskStatusDto;
+        return taskStatusService.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -82,10 +72,7 @@ public class TaskStatusesController {
     public TaskStatusDTO create(
             @Parameter(description = "Data to save")
             @Valid @RequestBody TaskStatusCreateDTO taskStatusCreateDto) {
-        var taskStatus = taskStatusesMapper.map(taskStatusCreateDto);
-        taskStatusesRepository.save(taskStatus);
-        var taskStatusDto = taskStatusesMapper.map(taskStatus);
-        return taskStatusDto;
+        return taskStatusService.create(taskStatusCreateDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -100,12 +87,7 @@ public class TaskStatusesController {
         @ApiResponse(responseCode = "404", description = "Status not found")})
     public TaskStatusDTO update(@Valid @RequestBody TaskStatusUpdateDTO taskStatusesUpdateDto,
                                 @PathVariable Long id) {
-        var taskStatus = taskStatusesRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task status not found"));
-        taskStatusesMapper.update(taskStatusesUpdateDto, taskStatus);
-        taskStatusesRepository.save(taskStatus);
-        var taskStatusDto = taskStatusesMapper.map(taskStatus);
-        return taskStatusDto;
+        return taskStatusService.update(taskStatusesUpdateDto, id);
     }
 
     @DeleteMapping("/task_statuses/{id}")
@@ -116,6 +98,6 @@ public class TaskStatusesController {
         @ApiResponse(responseCode = "405", description = "Operation not possible", content = @Content)
     })
     public void destroy(@PathVariable Long id) {
-        taskStatusesRepository.deleteById(id);
+        taskStatusService.delete(id);
     }
 }
