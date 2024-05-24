@@ -85,21 +85,36 @@ public class TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         taskMapper.update(taskData, task);
 
-        var statusSlug = taskData.getStatus();
-        if (statusSlug != null) {
-            var taskStatus = taskStatusRepository.findBySlug((statusSlug).get()).orElse(null);
-            task.setTaskStatus(taskStatus);
-        }
-        var taskLabelIds = taskData.getTaskLabelIds();
-        if (taskLabelIds != null) {
-            var taskLabels = new HashSet<>(labelRepository
-                    .findByIdIn((taskLabelIds).get())
-                    .orElse(new HashSet<>()));
-            task.setLabels(taskLabels);
-        }
+        setTaskUpdates(taskData, task);
+
         repository.save(task);
         var taskDTO = taskMapper.map(task);
         return taskDTO;
+    }
+
+    private void setTaskUpdates(TaskUpdateDTO taskUpdates, Task task) {
+        var assigneeId = taskUpdates.getAssigneeId();
+        if (assigneeId != null) {
+            var assignee = assigneeId.get() == null
+                    ? null
+                    : userRepository.findById(assigneeId.get()).orElseThrow();
+            task.setAssignee(assignee);
+        }
+
+        var statusSlug = taskUpdates.getStatus();
+        if (statusSlug != null) {
+            var taskStatus = statusSlug.get() == null
+                    ? null
+                    : taskStatusRepository.findBySlug(statusSlug.get()).orElseThrow();
+            task.setTaskStatus(taskStatus);
+        }
+        var taskLabelIds = taskUpdates.getTaskLabelIds();
+        if (taskLabelIds != null) {
+            var taskLabels = new HashSet<>(labelRepository
+                    .findByIdIn(taskLabelIds.get())
+                    .orElse(new HashSet<>()));
+            task.setLabels(taskLabels);
+        }
     }
 
     public void delete(Long id) {
